@@ -1,7 +1,7 @@
 // Require mongoose
 let mongoose = require("mongoose");
 
-// Create Schema class
+// Create Schema
 let Schema = mongoose.Schema;
 
 let ArticleSchema = new Schema({
@@ -24,7 +24,7 @@ let ArticleSchema = new Schema({
       }
 });
 
-// Create the article model
+// Create article model
 let Article = mongoose.model("Article", ArticleSchema);
 
 // Export the model
