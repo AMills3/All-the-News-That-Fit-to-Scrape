@@ -1,0 +1,42 @@
+<div class="container mt-3">
+  <div class="heading jumbotron">
+    <h1 class="text-center"></h1>
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <row class="col-12" id="articleList">
+        {{#each articles}}
+        <div class="col-md-5" id="{{this.id}}">
+          <div class="col-md-7">
+            <div class="row">
+
+              
+              <div class="col-md-4">
+                <img src="{{this.image}}" alt="Article Image" class="article-image">
+              </div>
+              
+              <div class="col-md-8">
+                <a class="" href="{{this.link}}" target="_blank">
+                  <h4>{{this.title}}</h4>
+                </a>
+                <p class="article-brief">{{this.brief}}</p>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-4 buttons">
+          {{#if this.saved}}
+            <button class="btn btn-info view-notes">Add Note</button>
+            <button class="btn btn-danger delete-article">Delete</button>
+          {{else}}
+            <button class="btn btn-success save-article">Save</button>
+          {{/if}}
+          </div>
+        </div>
+        {{/each}}
+
+    </row>
+  </div>
+</div>
