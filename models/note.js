@@ -1,15 +1,15 @@
-var mongoose = require("mongoose");
+let mongoose = require("mongoose");
 
-var Schema = mongoose.Schema;
+let Schema = mongoose.Schema;
 
 // Creating new object
-var NoteSchema = new Schema({
+let NoteSchema = new Schema({
   title: String,
   body: String
 });
 
 // Creating model
-var Note = mongoose.model("Note", NoteSchema);
+let Note = mongoose.model("Note", NoteSchema);
 
 // Exporting the model
 module.exports = Note;
