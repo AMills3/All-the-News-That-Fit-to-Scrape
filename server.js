@@ -30,10 +30,6 @@ app.engine("handlebars", expressHandlebars({
 }));
 app.set("view engine", "handlebars");
 
-// Routes
-const routes = require("./controllers/news.js");
-app.use("/",routes);
-
 // Error
 app.use(function(req, res) {
                 res.render("404");
