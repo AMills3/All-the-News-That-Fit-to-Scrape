@@ -22,20 +22,20 @@ $.ajax({
 .then(function(data) {
 console.log(data);
     $("#notes").append("<h1>" + data.title + "</h1>");
-    $("#notes").append("<input id='titleinput' name='title' >");
-    $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
-    $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+    $("#notes").append("<input id='titletext' name='title' >");
+    $("#notes").append("<textarea id='bodytext' name='body'></textarea>");
+    $("#notes").append("<button data-id='" + data._id + "' id='notesave'>Save Note</button>");
 
 // Adding more info to the note
 if (data.note) {
-    $("#titleinput").val(data.note.title);
-    $("#bodyinput").val(data.note.body);
+    $("#titletext").val(data.note.title);
+    $("#bodytext").val(data.note.body);
         }
     });
 });
 
 // On click event for the article
-$(document).on("click", "#savenote", function() {
+$(document).on("click", "#notesave", function() {
     let thisId = $(this).attr("data-id");
   
 // How to change the note
@@ -43,8 +43,8 @@ $.ajax({
     method: "POST",
     url: "/articles/" + thisId,
     data: {
-    title: $("#titleinput").val(),
-    body: $("#bodyinput").val()
+    title: $("#titletext").val(),
+    body: $("#bodytext").val()
       }
     })
 // Emptying the note section
@@ -53,6 +53,6 @@ $.ajax({
     });
   
 // Entering data for the note
-    $("#titleinput").val("");
-    $("#bodyinput").val("");
+    $("#titletext").val("");
+    $("#bodyte").val("");
 });
