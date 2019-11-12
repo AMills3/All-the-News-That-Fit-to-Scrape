@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 
 const app = express();
 
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
 // Public
 app.use(express.static(__dirname + "/public"));
 const port = process.env.PORT || 3000;
