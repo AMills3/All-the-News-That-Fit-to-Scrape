@@ -1,43 +1,95 @@
-// Required NPM
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-const logger = require("morgan");
-const mongoose = require("mongoose");
+let express = require("express");
+let logger = require("morgan");
+let mongoose = require("mongoose");
+let axios = require("axios");
+let cheerio = require("cheerio");
 
-const app = express();
+// Require the models
+let db = require("./models");
 
+let PORT = process.env.PORT || 3000;
+
+let app = express();
+
+// Configure middleware
+
+// Log the requests
+app.use(logger("dev"));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+// Connect to Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-// Public
-app.use(express.static(__dirname + "/public"));
-const port = process.env.PORT || 3000;
+mongoose.connect(MONGODB_URI);
 
-// Database
-require("./config/connection");
+// Routes
+app.get("/scrape", function(req, res) {
+  axios.get("https://www.nytimes.com/section/world").then(function(response) {
+    let $ = cheerio.load(response.data);
 
-// Logger
-app.use(logger("dev"));
+    $("h5").each(function(i, element) {
+      var result = {};
 
-// BodyParser Settings
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-                extended: false
-}));
+// Adding the text
+      result.title = $(this)
+        .children("a")
+        .text();
+      result.link = $(this)
+        .children("a")
+        .attr("href");
 
-// Set up Handlebar
-const expressHandlebars = require("express-handlebars");
-app.engine("handlebars", expressHandlebars({
-    defaultLayout: "main"
-}));
-app.set("view engine", "handlebars");
-
-// Error
-app.use(function(req, res) {
-                res.render("404");
+// Creating a new article
+      db.Article.create(result)
+        .then(function(dbArticle) {
+          console.log(dbArticle);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+    });
+    res.send("The scraping is complete.");
+  });
 });
 
-//Port
-app.listen(port, function() {
-    console.log("Listening on port:" + port);
+// Route to the database
+app.get("/articles", function(req, res) {
+    db.Article.find()
+      .then(function(dbPopulate) {
+        res.json(dbPopulate);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+});
+
+// Route to grab an article
+app.get("/articles/:id", function(req, res) {
+  db.Article.findById(req.params.id)
+  .populate("note")
+  .then(function(dbPopulate) {
+    res.json(dbPopulate);
+  })
+  .catch(function(err) {
+    res.json(err);
+  });
+});
+
+// Route to save the article
+app.post("/articles/:id", function(req, res) {
+  db.Note.create(req.body)
+    .then(function(dbPopulate) {
+      return db.Article.findOneAndUpdate({_id: req.params.id}, { $push: { note: dbPopulate._id } }, { new: true });
+    })
+    .then(function(dbPopulate) {
+      res.json(dbPopulate);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.listen(PORT, function() {
+  console.log("App running on port " + PORT + "!");
 });
