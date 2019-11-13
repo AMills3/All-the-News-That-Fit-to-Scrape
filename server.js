@@ -11,8 +11,6 @@ let PORT = process.env.PORT || 3000;
 
 let app = express();
 
-// Configure middleware
-
 // Log the requests
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
