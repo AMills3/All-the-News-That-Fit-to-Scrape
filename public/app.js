@@ -54,5 +54,5 @@ $.ajax({
   
 // Entering data for the note
     $("#titletext").val("");
-    $("#bodyte").val("");
+    $("#bodytext").val("");
 });
